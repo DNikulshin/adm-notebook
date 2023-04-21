@@ -1,0 +1,39 @@
+.date-time {
+  position: absolute;
+  top: 0;
+  right: .5rem;
+}
+
+
+.item-id {
+  position: absolute;
+  top: 0;
+  left: 3rem;
+}
+
+.btn-hover:hover {
+  transform: scale(2);
+  transition: all .3s;
+}
+
+.item-value {
+  padding: 1rem;
+  white-space: pre-line;
+  word-break: break-word;
+  font-size: 1.5rem;
+  width: 100%;
+}
+
+
+.item-value:focus {
+  padding: .5rem;
+  border: 1px solid brown;
+  border-radius: 2%;
+  outline: none!important;
+  min-width: 80%;
+}
+
+.danger {
+  border: 1px solid brown!important;
+  background: red;
+}
