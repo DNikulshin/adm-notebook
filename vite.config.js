@@ -1,7 +1,16 @@
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-
-// https://vitejs.dev/config/
+import vue from "@vitejs/plugin-vue";
+import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    VitePWA({ 
+      registerType: 'autoUpdate',
+     
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,vue,txt,woff2}'],
+      },
+      injectRegister: "auto"
+     })
+  ]
 })
