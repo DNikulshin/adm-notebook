@@ -1,6 +1,5 @@
 <template>
   <div class="app mt-5 -d-flex flex-column">
-    <!-- <loader v-if="loading" /> -->
     <div class="container">
       <div class="input-group mb-3">
         <span @click="addTodo" class="input-group-text" id="basic-addon1">
@@ -14,12 +13,12 @@
             </svg>
           </i>
         </span>
-        <input @keydown.stop.enter="addTodo" v-model="inputValue" type="text" class="form-control p-2 fs-3"
+        <input @keydown.enter="addTodo" v-model="inputValue" type="text" class="form-control p-2 fs-3"
           placeholder="Введите текст записи..." aria-label="Username" aria-describedby="basic-addon1" />
       </div>
 
-
-      <section>
+      <Loader v-if="loading"/>
+      <section v-else>
         <div class="notes-area" v-if="dataArray.length">
           <ul class="list-group">
             <li class="list-group-item mb-2 border d-flex justify-content-between" v-for="(item, idx) in dataArray"
@@ -35,7 +34,7 @@
                 <div class="info d-flex flex-column">
                   <small class="mx-1 text-nowrap date-time d-flex ustify-content-center align-items-center">
                     {{ item.date }}&nbsp;
-                    <i class="text-danger btn-hover" @click="removeTodo(item.id, idx + 1)">
+                    <i class="text-danger btn-hover" @click.prevent="removeTodo(item.id, idx + 1)">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-trash-fill" viewBox="0 0 16 16">
                         <path
@@ -66,32 +65,34 @@ const todosCollectionRef = collection(db, "todos")
 
 const dataArray = ref([])
 const inputValue = ref('')
-const emptyValue = ref(false)
+// const emptyValue = ref(false)
 const loading = ref(true)
 
 onMounted(() => {
-  try {
-    onSnapshot(collectionQuery, querySnapshot => {
+
+  onSnapshot(collectionQuery ,  { includeMetadataChanges: true },querySnapshot => {
 
       let fbTodos = []
 
       querySnapshot.forEach(doc => {
-        const todo = {
-          id: doc.id,
-          value: doc.data().value,
-          date: doc.data().date
-        }
-        fbTodos.unshift(todo)
+
+          const todo = {
+            id: doc.id,
+            value: doc.data().value,
+            date: doc.data().date
+          }
+
+          fbTodos.unshift(todo)
+
+        const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
+        console.log(source, " data: ", doc.data());
       })
       dataArray.value = fbTodos
-    })
-  } catch (e) {
-    console.log.console(e)
     loading.value = false
-  }
-  finally {
+    }, (error) => {
     loading.value = false
-  }
+    console.log('error.message: ', error.message)
+  })
 })
 
 

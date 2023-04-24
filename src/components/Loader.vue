@@ -1,5 +1,8 @@
 <template>
+  <div class="d-flex justify-content-center align-items-center w-100 mt-5">
     <span class="loader text-center"></span>
+  </div>
+
 </template>
 
 <script setup></script>
@@ -17,7 +20,7 @@
   animation: rotation 1s linear infinite;
 }
 .loader::after {
-  content: '';  
+  content: '';
   box-sizing: border-box;
   position: absolute;
   left: 0;
