@@ -21,18 +21,18 @@
       <section v-else>
         <div class="notes-area" v-if="dataArray.length">
           <ul class="list-group">
-            <li class="list-group-item mb-2 border d-flex justify-content-between" v-for="(item, idx) in dataArray"
+            <li class="list-group-item mb-2 border" v-for="(item, idx) in dataArray"
               :key="item.id">
               <span>
                 #{{ idx + 1 }}
               </span>
-              <small class="mx-2 text-nowrap item-id">id: {{ item.id }}</small>
+              <small class="mx-2 text-nowrap item-id">id: <span>{{ item.id }}</span></small>
               <div contenteditable class="text-wrap my-2 padding-value item-value" @blur="updateTodo($event, item)">
                 {{ item.value }}
               </div>
               <div class="d-flex">
                 <div class="info d-flex flex-column">
-                  <small class="mx-1 text-nowrap date-time d-flex ustify-content-center align-items-center">
+                  <small class="mx-1 text-nowrap date-time">
                     {{ item.date }}&nbsp;
                     <i class="text-danger btn-hover" @click.prevent="removeTodo(item.id, idx + 1)">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -71,8 +71,8 @@ const loading = ref(true)
 const autoFocus = ref(null) 
 
 onMounted(() => {
-  autoFocus.value?.focus()
   try {
+    autoFocus.value?.focus()
     onSnapshot(collectionQuery, { includeMetadataChanges: true }, querySnapshot => {
 
       let fbTodos = []
@@ -111,7 +111,7 @@ console.log(e);
 }
 
 const removeTodo = (id, idx) => {
-  const confirmRemove = confirm(`Удалить запись #${idx + 1} с id: ${id} ?`)
+  const confirmRemove = confirm(`Удалить запись ?  #${idx + 1} c id: ${id}`)
   if (confirmRemove) {
     deleteDoc(doc(db, "todos", id))
   }
