@@ -13,7 +13,7 @@
             </svg>
           </i>
         </span>
-        <input @keydown.enter.stop="addTodo($event)" v-model="inputValue" type="text" class="form-control p-2 fs-3"
+        <input @keydown.enter.prevent="addTodo" v-model="inputValue" type="text" class="form-control p-2 fs-3"
           placeholder="Введите текст записи..." aria-label="Username" aria-describedby="basic-addon1" ref="autoFocus"/>
       </div>
 
@@ -98,10 +98,9 @@ onMounted(() => {
 
 
 
-const addTodo = (e) => {
+const addTodo = () => {
 
   if (inputValue.value) {
-console.log(e);
     addDoc(todosCollectionRef, {
       value: inputValue.value,
       date: new Date().toLocaleString()
