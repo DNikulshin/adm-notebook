@@ -17,7 +17,7 @@
           placeholder="Введите текст записи..." aria-label="Username" aria-describedby="basic-addon1" />
       </div>
 
-      <Loader v-if="loading"/>
+      <Loader v-if="loading" />
       <section v-else>
         <div class="notes-area" v-if="dataArray.length">
           <ul class="list-group">
@@ -47,7 +47,7 @@
             </li>
           </ul>
         </div>
-        <strong class="text-danger" v-else>Записей пока нет!</strong>
+        <strong class="text-danger" v-show="!loading && !dataArray.length">Записей пока нет!</strong>
       </section>
 
     </div>
@@ -65,34 +65,33 @@ const todosCollectionRef = collection(db, "todos")
 
 const dataArray = ref([])
 const inputValue = ref('')
-// const emptyValue = ref(false)
 const loading = ref(true)
 
 onMounted(() => {
 
-  onSnapshot(collectionQuery ,  { includeMetadataChanges: true },querySnapshot => {
+  try {
+    onSnapshot(collectionQuery, { includeMetadataChanges: true }, querySnapshot => {
 
       let fbTodos = []
 
       querySnapshot.forEach(doc => {
 
-          const todo = {
-            id: doc.id,
-            value: doc.data().value,
-            date: doc.data().date
-          }
+        const todo = {
+          id: doc.id,
+          value: doc.data().value,
+          date: doc.data().date
+        }
 
-          fbTodos.unshift(todo)
+        fbTodos.unshift(todo)
 
-        const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
-        console.log(source, " data: ", doc.data());
+        dataArray.value = fbTodos
       })
-      dataArray.value = fbTodos
+      loading.value = false
+    })
+  } catch (e) {
     loading.value = false
-    }, (error) => {
-    loading.value = false
-    console.log('error.message: ', error.message)
-  })
+    console.log(e)
+  }
 })
 
 
@@ -134,7 +133,6 @@ const updateTodo = (e, item) => {
         date: new Date().toLocaleString()
       })
     }
-
   }
 
 }
