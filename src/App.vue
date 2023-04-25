@@ -83,9 +83,8 @@ onMounted(() => {
         }
 
         fbTodos.unshift(todo)
-
-        dataArray.value = fbTodos
       })
+      dataArray.value = fbTodos
       loading.value = false
     })
   } catch (e) {
