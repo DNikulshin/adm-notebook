@@ -13,8 +13,8 @@
             </svg>
           </i>
         </span>
-        <input @keydown.enter="addTodo" v-model="inputValue" type="text" class="form-control p-2 fs-3"
-          placeholder="Введите текст записи..." aria-label="Username" aria-describedby="basic-addon1" />
+        <input @keydown.enter="addTodo($event)" v-model="inputValue" type="text" class="form-control p-2 fs-3"
+          placeholder="Введите текст записи..." aria-label="Username" aria-describedby="basic-addon1" ref="autoFocus"/>
       </div>
 
       <Loader v-if="loading" />
@@ -68,9 +68,10 @@ const collectionQuery = query(todosCollectionRef, orderBy('date', 'asc'))
 const dataArray = ref([])
 const inputValue = ref('')
 const loading = ref(true)
+const autoFocus = ref(null) 
 
 onMounted(() => {
-
+  autoFocus.value?.focus()
   try {
     onSnapshot(collectionQuery, { includeMetadataChanges: true }, querySnapshot => {
 
@@ -97,9 +98,10 @@ onMounted(() => {
 
 
 
-const addTodo = () => {
+const addTodo = (e) => {
 
   if (inputValue.value) {
+console.log(e);
     addDoc(todosCollectionRef, {
       value: inputValue.value,
       date: new Date().toLocaleString()

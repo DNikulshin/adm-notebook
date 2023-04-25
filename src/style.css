@@ -37,3 +37,10 @@
   border: 1px solid brown!important;
   background: red;
 }
+
+/* @media (max-width: 420px) {
+  .item-id {
+    bottom: 0;
+    left: 2rem;
+  }
+} */
