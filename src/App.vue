@@ -63,6 +63,8 @@ import Loader from './components/Loader.vue'
 
 const todosCollectionRef = collection(db, "todos")
 
+const collectionQuery = query(todosCollectionRef, orderBy('date', 'asc'))
+
 const dataArray = ref([])
 const inputValue = ref('')
 const loading = ref(true)
@@ -94,7 +96,6 @@ onMounted(() => {
 })
 
 
-const collectionQuery = query(todosCollectionRef, orderBy('date', 'asc'))
 
 const addTodo = () => {
 
