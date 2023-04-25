@@ -13,12 +13,12 @@
             </svg>
           </i>
         </span>
-        <input @keydown.enter="addTodo($event)" v-model="inputValue" type="text" class="form-control p-2 fs-3"
+        <input @keydown.enter.stop="addTodo($event)" v-model="inputValue" type="text" class="form-control p-2 fs-3"
           placeholder="Введите текст записи..." aria-label="Username" aria-describedby="basic-addon1" ref="autoFocus"/>
       </div>
 
       <Loader v-if="loading" />
-      <section v-else>
+      <section v-else @click.stop>
         <div class="notes-area" v-if="dataArray.length">
           <ul class="list-group">
             <li class="list-group-item mb-2 border" v-for="(item, idx) in dataArray"
