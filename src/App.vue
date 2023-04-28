@@ -21,25 +21,43 @@
       <section v-else @click.stop>
         <div class="notes-area" v-if="dataArray.length">
           <ul class="list-group">
-            <li class="list-group-item mb-2 border item-shadow" v-for="(item, idx) in dataArray" :key="item.id">
+            <li 
+            class="list-group-item mb-2 border item-shadow" 
+            v-for="(item, idx) in dataArray" :key="item.id"
+            :class="{'done': item.done}"
+            >
               <span>
                 #{{ idx + 1 }}
               </span>
               <small class="mx-2 text-nowrap item-id">id: <span>{{ item.id }}</span></small>
-              <div contenteditable class="text-wrap my-2 padding-value item-value" @blur="updateTodo($event, item)">
+              <div 
+              contenteditable 
+              class="text-wrap my-2 padding-value item-value"
+               @blur="updateTodo($event, item)"
+              
+               >
                 {{ item.value }}
               </div>
               <div class="d-flex">
-                <div class="info d-flex flex-column">
+                <div class="info">
                   <small class="mx-1 text-nowrap date-time">
                     {{ item.date }}&nbsp;
-                    <i class="text-danger btn-hover" @click.prevent="removeTodo(item.id, idx)">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                        class="bi bi-trash-fill" viewBox="0 0 16 16">
-                        <path
-                          d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
-                      </svg>
-                    </i>
+                    <span class="d-flex flex-column align-items-end">
+                      <i class="text-danger btn-hover" @click.prevent="removeTodo(item.id, idx)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                          class="bi bi-trash-fill" viewBox="0 0 16 16">
+                          <path
+                            d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
+                        </svg>
+                      </i>
+                      <i class="" @click="toggleDoneItem($event, item)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                          class="bi bi-check2" viewBox="0 0 16 16">
+                          <path
+                            d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                        </svg>
+                      </i>
+                    </span>
                   </small>
                 </div>
               </div>
@@ -51,14 +69,15 @@
 
     </div>
   </div>
-  <div v-else class="d-flex text-center text-danger justify-content-center align-items-center mt-5"><strong>{{ toastMessage }}</strong></div>
+  <div v-else class="d-flex text-center text-danger justify-content-center align-items-center mt-5"><strong>{{
+    toastMessage }}</strong></div>
 </template>
 
 <script setup>
-import { ref, onMounted, watchEffect } from 'vue'
+import { ref, onMounted } from 'vue'
 import { toast } from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
-import { collection, onSnapshot, doc, addDoc, deleteDoc, updateDoc, query, orderBy } from 'firebase/firestore'
+import { collection, onSnapshot, doc, addDoc, deleteDoc, updateDoc, query, orderBy} from 'firebase/firestore'
 import { db } from './firebase'
 import Loader from './components/Loader.vue'
 
@@ -98,7 +117,9 @@ onMounted(() => {
         const todo = {
           id: doc.id,
           value: doc.data().value,
-          date: doc.data().date
+          date: doc.data().date,
+          done: doc.data().done,
+          status:  doc.data().status
         }
 
         fbTodos.unshift(todo)
@@ -118,7 +139,9 @@ const addTodo = () => {
   if (inputValue.value) {
     addDoc(todosCollectionRef, {
       value: inputValue.value,
-      date: new Date().toLocaleString()
+      date: new Date().toLocaleString(),
+      done: null,
+      status: 'новая'
     })
     inputValue.value = ''
   }
@@ -150,13 +173,26 @@ const updateTodo = (e, item) => {
       })
     }
   }
-
 }
+
+const toggleDoneItem = (e, item) => {
+  const target = e.target
+
+    updateDoc(doc(todosCollectionRef, item.id), {
+        // date: new Date().toLocaleString(),
+        done: !item.done
+      })
+  }
+
 
 </script>
 
 <style>
 .item-shadow {
-  box-shadow: 0 2px 3px rgba(0,0,0,0.5)!important;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5) !important;
+}
+
+.done {
+  background-color: rgb(192, 224, 192);
 }
 </style>
