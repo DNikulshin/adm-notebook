@@ -1,5 +1,5 @@
 <template>
-  <div class="app mt-5 -d-flex flex-column">
+  <div class="app mt-5 -d-flex flex-column" v-if="online">
     <div class="container">
       <div class="input-group mb-3">
         <span @click="addTodo" class="input-group-text" id="basic-addon1">
@@ -14,15 +14,14 @@
           </i>
         </span>
         <input @keydown.enter.prevent="addTodo" v-model="inputValue" type="text" class="form-control p-2 fs-3"
-          placeholder="Введите текст записи..." aria-label="Username" aria-describedby="basic-addon1" ref="autoFocus"/>
+          placeholder="Введите текст записи..." aria-label="Username" aria-describedby="basic-addon1" ref="autoFocus" />
       </div>
 
       <Loader v-if="loading" />
       <section v-else @click.stop>
         <div class="notes-area" v-if="dataArray.length">
           <ul class="list-group">
-            <li class="list-group-item mb-2 border" v-for="(item, idx) in dataArray"
-              :key="item.id">
+            <li class="list-group-item mb-2 border" v-for="(item, idx) in dataArray" :key="item.id">
               <span>
                 #{{ idx + 1 }}
               </span>
@@ -52,10 +51,13 @@
 
     </div>
   </div>
+  <div v-else class="d-flex text-center text-danger justify-content-center align-items-center mt-5"><strong>{{ toastMessage }}</strong></div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watchEffect } from 'vue'
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css'
 import { collection, onSnapshot, doc, addDoc, deleteDoc, updateDoc, query, orderBy } from 'firebase/firestore'
 import { db } from './firebase'
 import Loader from './components/Loader.vue'
@@ -68,10 +70,24 @@ const collectionQuery = query(todosCollectionRef, orderBy('date', 'asc'))
 const dataArray = ref([])
 const inputValue = ref('')
 const loading = ref(true)
-const autoFocus = ref(null) 
+const autoFocus = ref(null)
+const online = ref(window?.navigator.onLine)
+const toastMessage = ref('')
+
+const notify = (msg) => {
+  toast(toastMessage.value = msg, {
+    type: 'error',
+    autoClose: 3000,
+    position: toast.POSITION.TOP_CENTER,
+    transition: toast.TRANSITIONS.FLIP
+  })
+}
 
 onMounted(() => {
   try {
+    if (!online.value) {
+      notify('Нет интернета!')
+    }
     autoFocus.value?.focus()
     onSnapshot(collectionQuery, { includeMetadataChanges: true }, querySnapshot => {
 
@@ -95,7 +111,6 @@ onMounted(() => {
     console.log(e)
   }
 })
-
 
 
 const addTodo = () => {

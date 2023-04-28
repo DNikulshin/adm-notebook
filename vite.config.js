@@ -9,7 +9,7 @@ export default defineConfig({
      
       workbox: {
         cleanupOutdatedCaches: true,
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,vue,txt,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,vue,txt,woff,woff2,webmanifest}'],
       },
       injectRegister: "auto"
      })
