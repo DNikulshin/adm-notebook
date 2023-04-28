@@ -21,7 +21,7 @@
       <section v-else @click.stop>
         <div class="notes-area" v-if="dataArray.length">
           <ul class="list-group">
-            <li class="list-group-item mb-2 border" v-for="(item, idx) in dataArray" :key="item.id">
+            <li class="list-group-item mb-2 border item-shadow" v-for="(item, idx) in dataArray" :key="item.id">
               <span>
                 #{{ idx + 1 }}
               </span>
@@ -155,4 +155,8 @@ const updateTodo = (e, item) => {
 
 </script>
 
-<style></style>
+<style>
+.item-shadow {
+  box-shadow: 0 2px 3px rgba(0,0,0,0.5)!important;
+}
+</style>
