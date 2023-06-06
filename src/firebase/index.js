@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, initializeFirestore, memoryLocalCache, disableNetwork  } from 'firebase/firestore'
+import { getFirestore} from 'firebase/firestore'
 
 const app = initializeApp( {
     apiKey: "AIzaSyADugarrWyk3tLv2ijb_9RsEQ0e68FHuqI",
@@ -10,9 +10,6 @@ const app = initializeApp( {
     appId: "1:930322792029:web:e9ed9c303231b1905997b4"
   })
 
-// const db = initializeFirestore(app, {
-//     localCache: memoryLocalCache()
-// })
 const db = getFirestore(app)
 
 export {
