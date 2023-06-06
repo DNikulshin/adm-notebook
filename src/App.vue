@@ -140,12 +140,15 @@
   </div>
   <div
       v-else
-      class="d-flex text-center text-danger justify-content-center align-items-center mt-5"
+      class="d-flex text-center text-danger justify-content-center flex-column align-items-center mt-2"
   >
-    <strong>
-      {{ toastMessage }}
+    <strong class="mb-3">
+      {{ toastMessage }}&nbsp;<span>Режим просмотра.</span>
     </strong>
-    <div class="refresh text-primary">
+    <a class="refresh text-primary"
+        href="/"
+                @click="window?.location?.reload()"
+    >
         <svg
             xmlns="http://www.w3.org/2000/svg"
             width="50" height="50"
@@ -156,13 +159,47 @@
           <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"/>
           <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"/>
         </svg>
+    </a>
+    <div
+        class="notes-area"
+        v-if="dataArray.length"
+    >
+      <ul class="list-group">
+        <li
+            class="list-group-item mb-2 border item-shadow"
+            v-for="(item, idx) in dataArray" :key="item.id"
+        >
+              <span class="user-select-none">
+                #{{ idx + 1 }}
+              </span>
+          <small
+              class="mx-2 text-nowrap item-id user-select-none"
+          >
+            <span>id:</span>
+            <span>
+                  {{ item.id }}
+                </span>
+          </small>
+          <div
+              class="text-wrap my-2 padding-value item-value"
+          >
+            {{ item.value }}
+          </div>
+          <div class="d-flex">
+            <div class="info">
+              <small class="mx-1 text-nowrap date-time">
+                <span class="user-select-none">{{ item.date }}&nbsp</span>
+              </small>
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { RouterLink } from 'vue-router'
 import { toast } from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
 import { collection, onSnapshot, doc, addDoc, deleteDoc, updateDoc, query, orderBy } from 'firebase/firestore'
@@ -178,7 +215,7 @@ const dataArray = ref([])
 const inputValue = ref('')
 const loading = ref(true)
 const autoFocus = ref(null)
-const online = ref(window?.navigator.onLine)
+const online = ref(window?.navigator?.onLine)
 const toastMessage = ref('')
 
 const notify = (msg) => {
@@ -192,11 +229,17 @@ const notify = (msg) => {
 
 onMounted(() => {
   try {
+    autoFocus.value?.focus()
     if (!online.value) {
       notify('Нет интернета!')
+      if(localStorage.getItem('todoList')) {
+         dataArray.value = JSON.parse(localStorage.getItem('todoList'))
+      }
+    } else {
+      getItems()
     }
-    autoFocus.value?.focus()
-    getItems()
+
+
 
   } catch (e) {
     loading.value = false
@@ -225,6 +268,7 @@ const getItems = () => {
     })
 
     dataArray.value = fbTodos
+    localStorage.setItem('todoList', JSON.stringify(dataArray.value))
     loading.value = false
   })
 }
@@ -294,7 +338,9 @@ const toggleTools = (item) => {
   background-color: rgb(192, 224, 192);
 }
 .refresh {
-  position: absolute!important;
-  transform: translateY(100%)!important;
+  position: fixed!important;
+  bottom: 1.5rem!important;
+  right: 1.5rem!important;
+  z-index: 9999!important;
 }
 </style>

@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.adm_notebook",
+    "sha256_cert_fingerprints": [
+      "72:5A:52:C7:C6:47:3B:38:4C:6E:54:C8:F5:B7:56:C6:49:9A:D0:07:66:73:CE:01:5C:47:07:2B:19:C1:8A:FD"
+    ]
+  }
+}]
