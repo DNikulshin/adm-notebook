@@ -1,6 +1,6 @@
 <template>
   <div
-      class="app mt-5 -d-flex flex-column"
+      class="app mt-5 d-flex flex-column"
       v-if="online"
   >
     <div class="container">
@@ -140,7 +140,7 @@
   </div>
   <div
       v-else
-      class="d-flex text-center text-danger justify-content-center flex-column align-items-center mt-2"
+      class=" container d-flex text-center text-danger justify-content-center flex-column align-items-center mt-2"
   >
     <strong class="mb-3">
       {{ toastMessage }}&nbsp;<span>Режим просмотра.</span>
@@ -169,7 +169,7 @@
             class="list-group-item mb-2 border item-shadow"
             v-for="(item, idx) in dataArray" :key="item.id"
         >
-              <span class="user-select-none">
+              <span class="user-select-none item-idx">
                 #{{ idx + 1 }}
               </span>
           <small
@@ -342,5 +342,11 @@ const toggleTools = (item) => {
   bottom: 1.5rem!important;
   right: 1.5rem!important;
   z-index: 9999!important;
+}
+
+.item-idx {
+  position: absolute!important;
+  left: .5rem;
+  top: .5rem!important;
 }
 </style>
