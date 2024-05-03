@@ -40,9 +40,6 @@
           <ul class="list-group">
             <li
               class="list-group-item mb-2 border item-shadow"
-              v-for="(item, idx) in [...dataArray].sort((b, a) =>
-                a.date.localeCompare(b.date),
-              )"
               v-for="(item, idx) in sortArrray"
               :key="item.id"
               :class="{ done: item.done }"
@@ -207,12 +204,8 @@
 </template>
 
 <script setup>
-<<<<<<< HEAD
-import { ref, onMounted } from "vue";
-=======
 import { ref, onMounted, computed } from "vue";
 import moment from "moment";
->>>>>>> a6bf120ee1de9639e7b705b1c60bf4944a48b81a
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 import {
@@ -229,16 +222,8 @@ import { db } from "./firebase";
 import Loader from "./components/Loader.vue";
 
 const todosCollectionRef = collection(db, "todos");
-
-
-const collectionQuery = query(todosCollectionRef, orderBy("date", "asc"));
-
 const dataArray = ref([]);
 const collectionQuery = query(todosCollectionRef);
-
-const dataArray = ref([]);
-const dataArraySort = ref([]);
-
 const inputValue = ref("");
 const loading = ref(true);
 const autoFocus = ref(null);
@@ -252,7 +237,6 @@ const sortArrray = computed(() => {
       moment(a.date, "DD.MM.YYYY HH:mm:ss"),
   );
 });
->>>>>>> a6bf120ee1de9639e7b705b1c60bf4944a48b81a
 
 const notify = (msg) => {
   toast((toastMessage.value = msg), {
@@ -293,12 +277,7 @@ const getItems = () => {
         status: doc.data().status,
         showTools: doc.data().showTools,
       };
-
-<<<<<<< HEAD
-      fbTodos.unshift(todo);
-=======
       fbTodos.push(todo);
->>>>>>> a6bf120ee1de9639e7b705b1c60bf4944a48b81a
     });
 
     dataArray.value = fbTodos;
