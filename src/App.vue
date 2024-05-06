@@ -341,11 +341,11 @@ const toggleTools = (item) => {
 
 <style>
 .item-shadow {
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5)!important;
 }
 
 .done {
-  background-color: rgb(192, 224, 192);
+  background-color: rgb(192, 224, 192)!important;
 }
 
 .refresh {
